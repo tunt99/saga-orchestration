@@ -1,0 +1,6 @@
+axon:
+  axonserver:
+    servers: localhost:8124
+    configuration:
+      shards: 1axon
+      context: default

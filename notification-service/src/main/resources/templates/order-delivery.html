@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .email-container {
+            padding: 20px;
+            border: 1px solid #ddd;
+            max-width: 600px;
+            margin: auto;
+        }
+        .header {
+            background-color: #4CAF50;
+            padding: 10px;
+            text-align: center;
+            color: white;
+        }
+        .order-details {
+            margin-top: 20px;
+        }
+        .order-details table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .order-details th, .order-details td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .order-details th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="header">
+        <h1>Order Delivery Confirmation</h1>
+    </div>
+    <p>Dear <strong th:text="${customerName}"></strong>,</p>
+    <p>Thank you for your purchase! Your order <strong th:text="${orderNumber}"></strong> has been shipped.</p>
+
+    <div class="order-details">
+        <h2>Order Details</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${orderItems}">
+                <td th:text="${item.productName}"></td>
+                <td th:text="${item.quantity}"></td>
+                <td th:text="${item.price}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <p>Address: <strong th:text="${address}"></strong></p>
+
+    <p>Total: <strong th:text="${totalPrice}"></strong></p>
+
+    <p>If you have any questions, feel free to contact us at support@example.com.</p>
+
+    <p>Best regards,</p>
+    <p>Your Company</p>
+</div>
+</body>
+</html>

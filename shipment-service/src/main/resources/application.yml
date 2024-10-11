@@ -1,0 +1,24 @@
+server:
+  port: 9094
+
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3308/orches_shipment?useSSL=false&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate.ddl-auto: update
+logging:
+  level:
+    org.axonframework: INFO
+    io.axoniq.axonserver: INFO
+axon:
+  axonserver:
+    servers: localhost:8124
+    configuration:
+      shards: 1axon
+      context: default
+

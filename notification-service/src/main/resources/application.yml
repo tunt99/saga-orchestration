@@ -1,0 +1,29 @@
+server:
+  port: 8096
+spring:
+  application:
+    name: notification-service
+  kafka:
+    bootstrap-servers: localhost:19092, localhost:29092, localhost:39092
+    consumer-group-id: saga-orchestration-group
+    topic-send-mail-message: message-created-order
+    producer:
+      bootstrap-servers: localhost:19092, localhost:29092, localhost:39092
+      properties:
+        acks: all
+        retries: 10
+        retry.backoff.ms: 1000
+  mail:
+    host: sandbox.smtp.mailtrap.io
+    port: 587
+    username: e08842eb14d3ce
+    password: a3acb8d5cabffc
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+find-product-by-id-url: http://localhost:8093/products/{productId}
+find-user-by-id-url: http://localhost:9095/users/{userId}
