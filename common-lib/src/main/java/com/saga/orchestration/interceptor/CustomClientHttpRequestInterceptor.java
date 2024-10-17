@@ -1,4 +1,4 @@
-package com.saga.common.interceptor;
+package com.saga.orchestration.interceptor;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpRequest;

@@ -1,6 +1,6 @@
-package com.saga.common.configs;
+package com.saga.orchestration.configs;
 
-import com.saga.common.interceptor.CustomClientHttpRequestInterceptor;
+import com.saga.orchestration.interceptor.CustomClientHttpRequestInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.BufferingClientHttpRequestFactory;

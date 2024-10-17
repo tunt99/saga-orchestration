@@ -1,7 +1,7 @@
-package com.saga.common.service.impl;
+package com.saga.orchestration.service.impl;
 
-import com.saga.common.exception.BaseResponseException;
-import com.saga.common.service.RestServiceCommon;
+import com.saga.orchestration.exception.BaseResponseException;
+import com.saga.orchestration.service.RestServiceCommon;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;

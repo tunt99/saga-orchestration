@@ -1,4 +1,4 @@
-package com.saga.common.exception;
+package com.saga.orchestration.exception;
 
 public class BaseResponseException extends RuntimeException {
 
