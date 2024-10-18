@@ -1,6 +1,5 @@
 package com.saga.orchestration.services.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.saga.orchestration.configs.properties.DataProperties;
 import com.saga.orchestration.dtos.requests.CreateVoucherRequest;
 import com.saga.orchestration.dtos.requests.ValidVoucherRequest;
@@ -28,7 +27,6 @@ import java.util.concurrent.TimeUnit;
 public class VoucherServiceImpl implements VoucherService {
 
     private final VoucherRepository voucherRepository;
-    private final ObjectMapper objectMapper;
     private final RedisServiceCommon redisServiceCommon;
     private final RestServiceCommon restServiceCommon;
     private final DataProperties dataProperties;
@@ -47,19 +45,21 @@ public class VoucherServiceImpl implements VoucherService {
                 .availableDateTime(request.getAvailableDateTime())
                 .expiredDateTime(request.getExpiredDateTime())
                 .discountMoney(request.getDiscountMoney())
-                .discountPercentage(request.getDiscountPercentage()).build();
+                .discountPercentage(request.getDiscountPercentage())
+                .maxDiscountByPercentage(request.getMaxDiscountByPercentage())
+                .numberOfVouchers(request.getNumberOfVouchers()).build();
 
         try {
 
-        Duration durationWaiting = Duration.between(LocalDateTime.now(), request.getAvailableDateTime());
-        Duration duration = Duration.between(request.getAvailableDateTime(), request.getExpiredDateTime());
-        voucherRepository.save(voucher);
+            Duration durationWaiting = Duration.between(LocalDateTime.now(), request.getAvailableDateTime());
+            Duration duration = Duration.between(request.getAvailableDateTime(), request.getExpiredDateTime());
+            voucherRepository.save(voucher);
 
-        redisServiceCommon.put(voucher.getVoucherId(),
-                objectMapper.writeValueAsString(voucher), durationWaiting.toSeconds() + duration.toSeconds(), TimeUnit.SECONDS);
+            redisServiceCommon.put(voucher.getVoucherId(), request.getNumberOfVouchers(),
+                    durationWaiting.toSeconds() + duration.toSeconds(), TimeUnit.SECONDS);
 
-        return voucherRepository.save(voucher);
-        } catch (Exception ex){
+            return voucherRepository.save(voucher);
+        } catch (Exception ex) {
             log.info("Exception for voucher creation: {}", ex.getMessage());
             return null;
         }
@@ -75,17 +75,16 @@ public class VoucherServiceImpl implements VoucherService {
         }
 
         VoucherDetailResponse voucherDetailResponse = this.getVoucherFromRedis(request.getVoucherId());
-        if (voucherDetailResponse == null) {
-            throw new BaseResponseException("Voucher not found!");
-        }
 
-        if (LocalDateTime.now().isBefore(voucherDetailResponse.getAvailableDateTime())){
-            throw new BaseResponseException("Voucher is not available yet!");
-        }
+        if (voucherDetailResponse != null) {
+            if (LocalDateTime.now().isBefore(voucherDetailResponse.getAvailableDateTime())) {
+                throw new BaseResponseException("Voucher is not available yet!");
+            }
 
-        if (voucherDetailResponse.getAvailableRemainTime() < 0 ||
-                LocalDateTime.now().isAfter(voucherDetailResponse.getExpiredDateTime())){
-            throw new BaseResponseException("Voucher is expired!");
+            if (voucherDetailResponse.getAvailableRemainTime() < 0 ||
+                    LocalDateTime.now().isAfter(voucherDetailResponse.getExpiredDateTime())) {
+                throw new BaseResponseException("Voucher is expired!");
+            }
         }
 
         return ValidVoucherResponse.builder()
@@ -99,14 +98,27 @@ public class VoucherServiceImpl implements VoucherService {
             Voucher voucher = voucherRepository.findById(voucherId)
                     .orElseThrow(() -> new BaseResponseException("Voucher not found!"));
 
-            String cacheVoucher = (String) redisServiceCommon.get(voucherId);
+            Long numberOfVouchers = (Long) redisServiceCommon.get(voucherId);
+            if (numberOfVouchers == null) {
+                throw new BaseResponseException("Voucher is used fully!");
+            }
 
-            VoucherDetailResponse data = objectMapper.readValue(cacheVoucher, VoucherDetailResponse.class);
-            Duration durationWaiting = Duration.between(LocalDateTime.now(), data.getAvailableDateTime());
-            Duration duration = Duration.between(data.getAvailableDateTime(), data.getExpiredDateTime());
-            data.setAvailableRemainTime(durationWaiting.toSeconds() + duration.toSeconds());
-            return data;
-        } catch (Exception ex){
+            Duration durationWaiting = Duration.between(LocalDateTime.now(), voucher.getAvailableDateTime());
+            Duration duration = Duration.between(voucher.getAvailableDateTime(), voucher.getExpiredDateTime());
+
+            return VoucherDetailResponse.builder()
+                    .voucherId(voucherId)
+                    .voucherName(voucher.getVoucherName())
+                    .voucherDescription(voucher.getVoucherDescription())
+                    .availableDateTime(voucher.getAvailableDateTime())
+                    .expiredDateTime(voucher.getExpiredDateTime())
+                    .discountMoney(voucher.getDiscountMoney())
+                    .discountPercentage(voucher.getDiscountPercentage())
+                    .maxDiscountByPercentage(voucher.getMaxDiscountByPercentage())
+                    .availableRemainTime(durationWaiting.toSeconds() + duration.toSeconds())
+                    .remainNumberOfVouchers(numberOfVouchers)
+                    .build();
+        } catch (Exception ex) {
             log.error("Exception: {}", ex.getMessage());
             return null;
         }

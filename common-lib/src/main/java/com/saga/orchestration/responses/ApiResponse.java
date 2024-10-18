@@ -14,11 +14,18 @@ public class ApiResponse<T> {
     private String message;
 
     public static <T> ApiResponse<T> responseOK(T data) {
-        return ApiResponse.<T>builder().status(HttpStatus.OK.value()).data(data).build();
+        return ApiResponse.<T>builder()
+                .status(HttpStatus.OK.value())
+                .messageCode("00")
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(data).build();
     }
 
     public static <T> ApiResponse<T> responseOK() {
-        return ApiResponse.<T>builder().status(HttpStatus.OK.value()).build();
+        return ApiResponse.<T>builder()
+                .status(HttpStatus.OK.value())
+                .messageCode("00")
+                .message(HttpStatus.OK.getReasonPhrase()).build();
     }
 
     public static <T> ApiResponse<T> responseError(int status, String messageCode, String message) {

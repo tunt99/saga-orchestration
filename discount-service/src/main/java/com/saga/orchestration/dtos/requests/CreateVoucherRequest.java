@@ -19,4 +19,6 @@ public class CreateVoucherRequest {
     private LocalDateTime expiredDateTime;
     private Double discountMoney;
     private Integer discountPercentage;
+    private Double maxDiscountByPercentage;
+    private Long numberOfVouchers;
 }

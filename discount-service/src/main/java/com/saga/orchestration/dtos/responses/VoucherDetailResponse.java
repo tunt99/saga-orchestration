@@ -20,5 +20,7 @@ public class VoucherDetailResponse {
     private LocalDateTime expiredDateTime;
     private Double discountMoney;
     private Integer discountPercentage;
+    private Double maxDiscountByPercentage;
     private Long availableRemainTime;
+    private Long remainNumberOfVouchers;
 }

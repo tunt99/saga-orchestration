@@ -25,5 +25,6 @@ spring:
           starttls:
             enable: true
 
-find-product-by-id-url: http://localhost:8093/products/{productId}
-find-user-by-id-url: http://localhost:9095/users/{userId}
+system-url:
+  find-product-by-id: http://localhost:8093/products/{productId}
+  find-user-by-id: http://localhost:9095/users/{userId}

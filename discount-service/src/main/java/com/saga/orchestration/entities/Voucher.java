@@ -34,4 +34,8 @@ public class Voucher {
     private Double discountMoney;
 
     private Integer discountPercentage;
+
+    private Double maxDiscountByPercentage;
+
+    private Long numberOfVouchers;
 }

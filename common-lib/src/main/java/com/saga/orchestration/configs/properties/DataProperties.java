@@ -10,4 +10,5 @@ import org.springframework.context.annotation.Configuration;
 public class DataProperties {
 
     private String findUserById;
+    private String findProductById;
 }

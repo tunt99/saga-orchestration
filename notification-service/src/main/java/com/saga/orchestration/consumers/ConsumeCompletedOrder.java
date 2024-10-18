@@ -1,5 +1,6 @@
 package com.saga.orchestration.consumers;
 
+import com.saga.orchestration.configs.properties.DataProperties;
 import com.saga.orchestration.service.RestServiceCommon;
 import com.saga.orchestration.model.OrderRestModel;
 import com.saga.orchestration.model.ProductRestModel;
@@ -8,7 +9,6 @@ import com.saga.orchestration.model.UserRestModel;
 import com.saga.orchestration.services.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -24,22 +24,17 @@ public class ConsumeCompletedOrder {
     private final ObjectMapper objectMapper;
     private final RestServiceCommon restServiceCommon;
     private final EmailService emailService;
-
-    @Value("${find-product-by-id-url}")
-    private String urlFindProductById;
-
-    @Value("${find-user-by-id-url}")
-    private String urlFindUserById;
+    private final DataProperties dataProperties;
 
     @KafkaListener(id = "${spring.kafka.consumer-group-id}", topics = "${spring.kafka.topic-send-mail-message}")
     public void receiveOrderAndSendMail(String message) {
         try {
             OrderRestModel orderInfo = objectMapper.readValue(message, OrderRestModel.class);
 
-            ProductRestModel productInfo = restServiceCommon.invokeApi(null, urlFindProductById,
+            ProductRestModel productInfo = restServiceCommon.invokeApi(null, dataProperties.getFindProductById(),
                             HttpMethod.GET, null, null, ProductRestModel.class, orderInfo.getProductId());
 
-            UserRestModel userInfo = restServiceCommon.invokeApi(null, urlFindUserById,
+            UserRestModel userInfo = restServiceCommon.invokeApi(null, dataProperties.getFindUserById(),
                     HttpMethod.GET, null, null, UserRestModel.class, orderInfo.getUserId());
             log.info("=== KAFKA CONSUME ===: ORDER {} - PRODUCT {} - USER {}", orderInfo, productInfo, userInfo);
 

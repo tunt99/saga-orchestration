@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/discount")
+@RequestMapping("/discount/voucher")
 @RequiredArgsConstructor
 public class DiscountController {
 
@@ -23,13 +23,13 @@ public class DiscountController {
         return ApiResponse.responseOK(voucherService.getVoucherDetail(voucherId));
     }
 
-    @PostMapping("/voucher")
+    @PostMapping
     public ApiResponse<Voucher> createNewVoucher(@RequestBody CreateVoucherRequest request) {
 
         return ApiResponse.responseOK(voucherService.createNewVoucher(request));
     }
 
-    @PostMapping("/check-voucher")
+    @PostMapping("/check")
     public ApiResponse<ValidVoucherResponse> checkValidVoucher(@RequestBody ValidVoucherRequest request) {
         return ApiResponse.responseOK(voucherService.checkValidVoucher(request));
     }
