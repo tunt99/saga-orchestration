@@ -6,6 +6,7 @@ import com.saga.orchestration.events.OrderCancelledEvent;
 import com.saga.orchestration.events.OrderCompletedEvent;
 import com.saga.orchestration.command.api.command.CreateOrderCommand;
 import com.saga.orchestration.command.api.events.OrderCreatedEvent;
+import lombok.NoArgsConstructor;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
@@ -14,6 +15,7 @@ import org.axonframework.spring.stereotype.Aggregate;
 import org.springframework.beans.BeanUtils;
 
 @Aggregate
+@NoArgsConstructor
 public class OrderAggregate {
 
     @AggregateIdentifier
@@ -23,9 +25,6 @@ public class OrderAggregate {
     private String addressId;
     private Integer quantity;
     private String orderStatus;
-
-    public OrderAggregate() {
-    }
 
     /**
      *

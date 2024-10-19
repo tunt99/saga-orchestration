@@ -20,6 +20,11 @@ public class RedisServiceCommonImpl implements RedisServiceCommon {
     }
 
     @Override
+    public void put(String key, Object value) {
+        sagaRedisTemplate.opsForValue().set(key, value);
+    }
+
+    @Override
     public Object get(String key) {
         return sagaRedisTemplate.opsForValue().get(key);
     }

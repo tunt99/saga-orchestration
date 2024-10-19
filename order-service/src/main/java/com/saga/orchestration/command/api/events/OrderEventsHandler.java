@@ -2,8 +2,8 @@ package com.saga.orchestration.command.api.events;
 
 import com.saga.orchestration.events.OrderCancelledEvent;
 import com.saga.orchestration.events.OrderCompletedEvent;
-import com.saga.orchestration.command.api.data.Order;
-import com.saga.orchestration.command.api.data.OrderRepository;
+import com.saga.orchestration.entities.Order;
+import com.saga.orchestration.repositories.OrderRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

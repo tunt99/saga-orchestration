@@ -2,7 +2,7 @@ package com.saga.orchestration.command.api.saga;
 
 import com.saga.orchestration.commands.*;
 import com.saga.orchestration.events.*;
-import com.saga.orchestration.model.User;
+import com.saga.orchestration.model.UserInfo;
 import com.saga.orchestration.queries.GetUserPaymentDetailsQuery;
 import com.saga.orchestration.command.api.events.OrderCreatedEvent;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +15,7 @@ import org.axonframework.queryhandling.QueryGateway;
 import org.axonframework.spring.stereotype.Saga;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collections;
 import java.util.UUID;
 
 @Saga
@@ -39,13 +40,10 @@ public class OrderProcessingSaga {
         GetUserPaymentDetailsQuery getUserPaymentDetailsQuery
                 = new GetUserPaymentDetailsQuery(event.getUserId());
 
-        User user = null;
+        UserInfo user = null;
 
         try {
-            user = queryGateway.query(
-                    getUserPaymentDetailsQuery,
-                    ResponseTypes.instanceOf(User.class)
-            ).join();
+            user = queryGateway.query(getUserPaymentDetailsQuery, ResponseTypes.instanceOf(UserInfo.class)).join();
 
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -56,7 +54,7 @@ public class OrderProcessingSaga {
         ValidatePaymentCommand validatePaymentCommand
                 = ValidatePaymentCommand
                 .builder()
-                .cardDetails(user.getCardDetails())
+                .cardDetails(user != null ? user.getCardDetails() : Collections.emptyList())
                 .orderId(event.getOrderId())
                 .userId(event.getUserId())
                 .paymentId(UUID.randomUUID().toString())
