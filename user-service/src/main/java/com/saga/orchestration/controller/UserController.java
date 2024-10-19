@@ -1,6 +1,6 @@
 package com.saga.orchestration.controller;
 
-import com.saga.orchestration.model.User;
+import com.saga.orchestration.model.UserInfo;
 import com.saga.orchestration.queries.GetUserPaymentDetailsQuery;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
@@ -20,13 +20,10 @@ public class UserController {
     }
 
     @GetMapping("{userId}")
-    public User getUserPaymentDetails(@PathVariable String userId){
+    public UserInfo getUserPaymentDetails(@PathVariable String userId){
         GetUserPaymentDetailsQuery getUserPaymentDetailsQuery
                 = new GetUserPaymentDetailsQuery(userId);
-        User user =
-                queryGateway.query(getUserPaymentDetailsQuery,
-                        ResponseTypes.instanceOf(User.class)).join();
-
-        return user;
+        return queryGateway.query(getUserPaymentDetailsQuery,
+                        ResponseTypes.instanceOf(UserInfo.class)).join();
     }
 }
