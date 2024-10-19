@@ -1,7 +1,7 @@
 package com.saga.orchestration.query.api.projection;
 
-import com.saga.orchestration.command.api.data.Product;
-import com.saga.orchestration.command.api.data.ProductRepository;
+import com.saga.orchestration.entities.Product;
+import com.saga.orchestration.repositories.ProductRepository;
 import com.saga.orchestration.command.api.model.ProductRestModel;
 import com.saga.orchestration.query.api.queries.GetAllProductsQuery;
 import com.saga.orchestration.query.api.queries.GetProductQuery;

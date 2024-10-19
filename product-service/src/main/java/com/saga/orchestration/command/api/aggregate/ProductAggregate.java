@@ -9,15 +9,13 @@ import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.springframework.beans.BeanUtils;
 
-import java.math.BigDecimal;
-
 @Aggregate
 public class ProductAggregate {
 
     @AggregateIdentifier
     private String productId;
     private String name;
-    private BigDecimal price;
+    private Double price;
     private Integer quantity;
 
     @CommandHandler

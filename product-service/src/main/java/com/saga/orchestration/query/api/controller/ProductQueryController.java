@@ -24,17 +24,13 @@ public class ProductQueryController {
     public List<ProductRestModel> getAllProducts() {
         GetAllProductsQuery getAllProductsQuery = new GetAllProductsQuery();
 
-        return queryGateway.query(getAllProductsQuery,
-                ResponseTypes.multipleInstancesOf(ProductRestModel.class))
-                .join();
+        return queryGateway.query(getAllProductsQuery, ResponseTypes.multipleInstancesOf(ProductRestModel.class)).join();
     }
 
     @GetMapping("{productId}")
     public ProductRestModel getProductById(@PathVariable String productId) {
         GetProductQuery getProductQuery = new GetProductQuery(productId);
 
-        return queryGateway.query(getProductQuery,
-                        ResponseTypes.instanceOf(ProductRestModel.class))
-                .join();
+        return queryGateway.query(getProductQuery, ResponseTypes.instanceOf(ProductRestModel.class)).join();
     }
 }
