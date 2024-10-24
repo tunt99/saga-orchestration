@@ -1,8 +1,7 @@
 package com.saga.orchestration.services;
 
 import com.saga.orchestration.dtos.requests.CreateVoucherRequest;
-import com.saga.orchestration.dtos.requests.ValidVoucherRequest;
-import com.saga.orchestration.dtos.responses.ValidVoucherResponse;
+import com.saga.orchestration.models.responses.ValidVoucherResponse;
 import com.saga.orchestration.dtos.responses.VoucherDetailResponse;
 import com.saga.orchestration.entities.Voucher;
 
@@ -12,5 +11,5 @@ public interface VoucherService {
 
     Voucher createNewVoucher(CreateVoucherRequest request);
 
-    ValidVoucherResponse checkValidVoucher(ValidVoucherRequest request);
+    ValidVoucherResponse checkValidVoucher(String request);
 }

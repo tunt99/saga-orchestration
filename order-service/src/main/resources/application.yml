@@ -1,6 +1,9 @@
 server:
   port: 9091
-
+system-url:
+  check-valid-voucher: http://localhost:8097/discount/voucher/check/{voucherId}
+  find-product-by-id: http://localhost:8093/products/{productId}
+  find-user-by-id: http://localhost:9095/users/{userId}
 
 spring:
   datasource:

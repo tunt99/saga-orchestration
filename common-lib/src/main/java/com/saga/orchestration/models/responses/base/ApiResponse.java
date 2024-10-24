@@ -1,4 +1,4 @@
-package com.saga.orchestration.responses;
+package com.saga.orchestration.models.responses.base;
 
 import lombok.Builder;
 import lombok.Data;

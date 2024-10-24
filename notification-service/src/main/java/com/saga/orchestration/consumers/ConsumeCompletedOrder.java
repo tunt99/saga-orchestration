@@ -1,11 +1,11 @@
 package com.saga.orchestration.consumers;
 
 import com.saga.orchestration.configs.properties.DataProperties;
+import com.saga.orchestration.models.OrderInfo;
+import com.saga.orchestration.models.ProductInfo;
+import com.saga.orchestration.models.UserInfo;
 import com.saga.orchestration.service.RestServiceCommon;
-import com.saga.orchestration.model.OrderRestModel;
-import com.saga.orchestration.model.ProductRestModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.saga.orchestration.model.UserRestModel;
 import com.saga.orchestration.services.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,13 +29,13 @@ public class ConsumeCompletedOrder {
     @KafkaListener(id = "${spring.kafka.consumer-group-id}", topics = "${spring.kafka.topic-send-mail-message}")
     public void receiveOrderAndSendMail(String message) {
         try {
-            OrderRestModel orderInfo = objectMapper.readValue(message, OrderRestModel.class);
+            OrderInfo orderInfo = objectMapper.readValue(message, OrderInfo.class);
 
-            ProductRestModel productInfo = restServiceCommon.invokeApi(null, dataProperties.getFindProductById(),
-                            HttpMethod.GET, null, null, ProductRestModel.class, orderInfo.getProductId());
+            ProductInfo productInfo = restServiceCommon.invokeApi(null, dataProperties.getFindProductById(),
+                            HttpMethod.GET, null, null, ProductInfo.class, orderInfo.getProductId());
 
-            UserRestModel userInfo = restServiceCommon.invokeApi(null, dataProperties.getFindUserById(),
-                    HttpMethod.GET, null, null, UserRestModel.class, orderInfo.getUserId());
+            UserInfo userInfo = restServiceCommon.invokeApi(null, dataProperties.getFindUserById(),
+                    HttpMethod.GET, null, null, UserInfo.class, orderInfo.getUserId());
             log.info("=== KAFKA CONSUME ===: ORDER {} - PRODUCT {} - USER {}", orderInfo, productInfo, userInfo);
 
             Map<String, Object> model = new HashMap<>();
@@ -46,7 +46,7 @@ public class ConsumeCompletedOrder {
             Map<String, Object> item = new HashMap<>();
             item.put("productName", productInfo.getName());
             item.put("quantity", orderInfo.getQuantity());
-            double price = orderInfo.getQuantity() * productInfo.getPrice().doubleValue();
+            double price = orderInfo.getQuantity() * productInfo.getPrice();
             item.put("price", "$" + price);
 
             model.put("orderItems", List.of(item));

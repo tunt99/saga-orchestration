@@ -9,6 +9,9 @@ public class OrderCreatedEvent {
     private String productId;
     private String userId;
     private String addressId;
+    private String paymentCardId;
+    private Double price;
+    private Double totalPrice;
     private Integer quantity;
     private String orderStatus;
 }

@@ -26,18 +26,19 @@ public class PaymentAggregate {
 
     @CommandHandler
     public PaymentAggregate(ValidatePaymentCommand validatePaymentCommand) {
-        //Validate the Payment Details
+        // Validate the Payment Details - Call to payment method
+
         // Publish the Payment Processed event
         log.info("Executing ValidatePaymentCommand for " +
                 "Order Id: {} and Payment Id: {}",
                 validatePaymentCommand.getOrderId(),
                 validatePaymentCommand.getPaymentId());
 
-        PaymentProcessedEvent paymentProcessedEvent
-                = new PaymentProcessedEvent(
-                validatePaymentCommand.getPaymentId(),
-                validatePaymentCommand.getOrderId(),
-                validatePaymentCommand.getUserId());
+        PaymentProcessedEvent paymentProcessedEvent = PaymentProcessedEvent.builder()
+                .paymentId(validatePaymentCommand.getPaymentId())
+                .orderId(validatePaymentCommand.getOrderId())
+                .userId(validatePaymentCommand.getUserId())
+                .build();
 
         AggregateLifecycle.apply(paymentProcessedEvent);
 

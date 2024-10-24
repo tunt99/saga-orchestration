@@ -2,11 +2,12 @@ package com.saga.orchestration.services.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.saga.orchestration.constants.enums.ErrorCode;
 import com.saga.orchestration.entities.Address;
 import com.saga.orchestration.entities.CardDetail;
 import com.saga.orchestration.entities.User;
-import com.saga.orchestration.exception.BaseResponseException;
-import com.saga.orchestration.model.UserInfo;
+import com.saga.orchestration.exception.BusinessLogicException;
+import com.saga.orchestration.models.UserInfo;
 import com.saga.orchestration.queries.GetUserPaymentDetailsQuery;
 import com.saga.orchestration.repositories.AddressRepository;
 import com.saga.orchestration.repositories.CardDetailRepository;
@@ -32,7 +33,7 @@ public class UserServiceImpl implements UserService {
     public UserInfo getUserPaymentDetails(GetUserPaymentDetailsQuery query) {
 
         User user = userRepository.findById(query.getUserId())
-                .orElseThrow(() -> new BaseResponseException("User not found!"));
+                .orElseThrow(() -> new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
 
         List<Address> addresses = addressRepository.findAll();
         List<CardDetail> cardDetails = cardDetailRepository.findAll();

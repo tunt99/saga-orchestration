@@ -1,4 +1,4 @@
-package com.saga.orchestration.model;
+package com.saga.orchestration.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

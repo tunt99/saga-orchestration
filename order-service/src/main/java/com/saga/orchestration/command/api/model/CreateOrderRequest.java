@@ -7,9 +7,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderRestModel {
+public class CreateOrderRequest {
     private String productId;
     private String userId;
     private String addressId;
+    private String paymentCardId;
+    private String voucherId;
     private Integer quantity;
+    private Double discountMoney;
+    private Integer discountPercentage;
+    private Double maxDiscountByPercentage;
 }

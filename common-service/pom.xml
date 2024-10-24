@@ -35,6 +35,11 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.saga</groupId>
+			<artifactId>common-lib</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 </project>

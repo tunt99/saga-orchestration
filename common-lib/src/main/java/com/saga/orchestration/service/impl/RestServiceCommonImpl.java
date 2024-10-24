@@ -1,6 +1,6 @@
 package com.saga.orchestration.service.impl;
 
-import com.saga.orchestration.exception.BaseResponseException;
+import com.saga.orchestration.exception.BusinessLogicException;
 import com.saga.orchestration.service.RestServiceCommon;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +35,7 @@ public class RestServiceCommonImpl implements RestServiceCommon {
             throw new ResourceAccessException(HttpStatus.REQUEST_TIMEOUT.getReasonPhrase());
         } catch (Exception ex){
             log.info("Response error: {}", ex.getMessage());
-            throw new BaseResponseException(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+            throw new BusinessLogicException(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
         }
     }
 }

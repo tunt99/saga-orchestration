@@ -1,6 +1,6 @@
 package com.saga.orchestration.exception;
 
-import com.saga.orchestration.responses.ApiResponse;
+import com.saga.orchestration.models.responses.base.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +17,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(BaseResponseException.class)
-    public ApiResponse<String> handle(BaseResponseException e) {
+    @ExceptionHandler(BusinessLogicException.class)
+    public ApiResponse<String> handle(BusinessLogicException e) {
         log.error("Business exception!", e);
         return ApiResponse.responseError(HttpStatus.BAD_REQUEST.value(), "99", e.getMessage());
     }

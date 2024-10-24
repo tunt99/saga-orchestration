@@ -1,5 +1,6 @@
 package com.saga.orchestration.commands;
 
+import com.saga.orchestration.constants.enums.OrderStatus;
 import lombok.Value;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
@@ -7,6 +8,6 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 public class CancelOrderCommand {
 
     @TargetAggregateIdentifier
-    private String orderId;
-    private String orderStatus = "CANCELLED";
+    String orderId;
+    String orderStatus = OrderStatus.CANCELLED.name();
 }

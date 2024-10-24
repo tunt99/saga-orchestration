@@ -1,4 +1,4 @@
-package com.saga.orchestration.model;
+package com.saga.orchestration.models;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderRestModel {
+public class OrderInfo {
     private String orderId;
     private String productId;
     private String userId;

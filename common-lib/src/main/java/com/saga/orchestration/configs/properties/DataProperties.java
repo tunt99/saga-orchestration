@@ -11,4 +11,5 @@ public class DataProperties {
 
     private String findUserById;
     private String findProductById;
+    private String checkValidVoucher;
 }

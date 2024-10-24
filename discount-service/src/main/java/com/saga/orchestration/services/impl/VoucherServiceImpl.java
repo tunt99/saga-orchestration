@@ -1,20 +1,16 @@
 package com.saga.orchestration.services.impl;
 
-import com.saga.orchestration.configs.properties.DataProperties;
+import com.saga.orchestration.constants.enums.ErrorCode;
 import com.saga.orchestration.dtos.requests.CreateVoucherRequest;
-import com.saga.orchestration.dtos.requests.ValidVoucherRequest;
-import com.saga.orchestration.dtos.responses.ValidVoucherResponse;
+import com.saga.orchestration.models.responses.ValidVoucherResponse;
 import com.saga.orchestration.dtos.responses.VoucherDetailResponse;
 import com.saga.orchestration.entities.Voucher;
-import com.saga.orchestration.models.UserRestModel;
 import com.saga.orchestration.repositories.VoucherRepository;
-import com.saga.orchestration.service.RestServiceCommon;
 import com.saga.orchestration.services.VoucherService;
-import com.saga.orchestration.exception.BaseResponseException;
+import com.saga.orchestration.exception.BusinessLogicException;
 import com.saga.orchestration.service.RedisServiceCommon;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -28,8 +24,6 @@ public class VoucherServiceImpl implements VoucherService {
 
     private final VoucherRepository voucherRepository;
     private final RedisServiceCommon redisServiceCommon;
-    private final RestServiceCommon restServiceCommon;
-    private final DataProperties dataProperties;
 
     @Override
     public VoucherDetailResponse getVoucherDetail(String voucherId) {
@@ -66,41 +60,39 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public ValidVoucherResponse checkValidVoucher(ValidVoucherRequest request) {
-        UserRestModel userInfo = restServiceCommon.invokeApi(null, dataProperties.getFindUserById(),
-                HttpMethod.GET, null, null, UserRestModel.class, request.getUserId());
+    public ValidVoucherResponse checkValidVoucher(String voucherId) {
 
-        if (userInfo == null) {
-            throw new BaseResponseException("User not found!");
-        }
+        VoucherDetailResponse voucherDetailResponse = this.getVoucherFromRedis(voucherId);
 
-        VoucherDetailResponse voucherDetailResponse = this.getVoucherFromRedis(request.getVoucherId());
-
-        if (voucherDetailResponse != null) {
+        if (voucherDetailResponse == null){
+            throw new BusinessLogicException(ErrorCode.VOUCHER_NOT_FOUND);
+        } else {
             if (LocalDateTime.now().isBefore(voucherDetailResponse.getAvailableDateTime())) {
-                throw new BaseResponseException("Voucher is not available yet!");
+                throw new BusinessLogicException(ErrorCode.VOUCHER_IS_NOT_AVAILABLE_YET);
             }
 
             if (voucherDetailResponse.getAvailableRemainTime() < 0 ||
                     LocalDateTime.now().isAfter(voucherDetailResponse.getExpiredDateTime())) {
-                throw new BaseResponseException("Voucher is expired!");
+                throw new BusinessLogicException(ErrorCode.VOUCHER_IS_EXPIRED);
             }
         }
 
         return ValidVoucherResponse.builder()
-                .voucherId(request.getVoucherId())
-                .userId(request.getUserId())
-                .isValid(true).build();
+                .voucherId(voucherId)
+                .isValid(true)
+                .discountMoney(voucherDetailResponse.getDiscountMoney())
+                .discountPercentage(voucherDetailResponse.getDiscountPercentage())
+                .maxDiscountByPercentage(voucherDetailResponse.getMaxDiscountByPercentage()).build();
     }
 
     private VoucherDetailResponse getVoucherFromRedis(String voucherId) {
         try {
             Voucher voucher = voucherRepository.findById(voucherId)
-                    .orElseThrow(() -> new BaseResponseException("Voucher not found!"));
+                    .orElseThrow(() -> new BusinessLogicException(ErrorCode.VOUCHER_NOT_FOUND));
 
             Long numberOfVouchers = (Long) redisServiceCommon.get(voucherId);
             if (numberOfVouchers == null) {
-                throw new BaseResponseException("Voucher is used fully!");
+                throw new BusinessLogicException(ErrorCode.VOUCHER_IS_USED_FULLY);
             }
 
             Duration durationWaiting = Duration.between(LocalDateTime.now(), voucher.getAvailableDateTime());

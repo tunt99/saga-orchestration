@@ -1,8 +1,8 @@
 package com.saga.orchestration.services;
 
-import com.saga.orchestration.command.api.model.OrderRestModel;
+import com.saga.orchestration.command.api.model.CreateOrderRequest;
 
 public interface OrderService {
 
-    String createOrder(OrderRestModel orderRestModel);
+    String createOrder(CreateOrderRequest createOrderRequest);
 }

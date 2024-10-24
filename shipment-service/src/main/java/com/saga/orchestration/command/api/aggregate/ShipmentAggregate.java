@@ -1,6 +1,7 @@
 package com.saga.orchestration.command.api.aggregate;
 
 import com.saga.orchestration.commands.ShipOrderCommand;
+import com.saga.orchestration.constants.enums.OrderStatus;
 import com.saga.orchestration.events.OrderShippedEvent;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
@@ -23,13 +24,11 @@ public class ShipmentAggregate {
     public ShipmentAggregate(ShipOrderCommand shipOrderCommand) {
         //Validate the Command
         // Publish the Order Shipped event
-        OrderShippedEvent orderShippedEvent
-                = OrderShippedEvent
-                .builder()
+        OrderShippedEvent orderShippedEvent = OrderShippedEvent.builder()
                 .shipmentId(shipOrderCommand.getShipmentId())
                 .orderId(shipOrderCommand.getOrderId())
                 .userId(shipOrderCommand.getUserId())
-                .shipmentStatus("COMPLETED")
+                .shipmentStatus(OrderStatus.COMPLETED.name())
                 .build();
 
         AggregateLifecycle.apply(orderShippedEvent);

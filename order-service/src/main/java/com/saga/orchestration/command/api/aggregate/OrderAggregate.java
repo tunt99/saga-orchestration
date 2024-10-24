@@ -23,6 +23,9 @@ public class OrderAggregate {
     private String productId;
     private String userId;
     private String addressId;
+    private String paymentCardId;
+    private Double price;
+    private Double totalPrice;
     private Integer quantity;
     private String orderStatus;
 
@@ -46,6 +49,9 @@ public class OrderAggregate {
         this.quantity = event.getQuantity();
         this.productId = event.getProductId();
         this.addressId = event.getAddressId();
+        this.paymentCardId = event.getPaymentCardId();
+        this.price = event.getPrice();
+        this.totalPrice = event.getTotalPrice();
     }
 
     /**
@@ -55,8 +61,7 @@ public class OrderAggregate {
     public void handle(CompleteOrderCommand completeOrderCommand) {
         //Validate The Command
         // Publish Order Completed Event
-        OrderCompletedEvent orderCompletedEvent
-                = OrderCompletedEvent.builder()
+        OrderCompletedEvent orderCompletedEvent = OrderCompletedEvent.builder()
                 .orderStatus(completeOrderCommand.getOrderStatus())
                 .orderId(completeOrderCommand.getOrderId())
                 .userId(completeOrderCommand.getUserId())
